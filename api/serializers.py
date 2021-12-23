@@ -19,7 +19,6 @@ class BookingPostSerializer(serializers.ModelSerializer):
                                                        datetime_validator])
 
     def validate(self, attrs):
-        print(attrs)
         one_hour = datetime.timedelta(hours=1)
         from_time = attrs.get('booked_from_datetime')
         to_time = attrs.get('booked_to_datetime')
@@ -37,9 +36,8 @@ class BookingPostSerializer(serializers.ModelSerializer):
 
         if bookings.exists():
             raise serializers.ValidationError(
-                'Выброное время уже занято'
+                'Выбраное время уже занято'
             )
-
 
         return attrs
 
@@ -50,9 +48,14 @@ class BookingPostSerializer(serializers.ModelSerializer):
 
 
 class BookingSerializer(serializers.ModelSerializer):
+    booked_from_datetime = serializers.DateTimeField(format='%Y-%m-%d %H:%M',
+                                                     read_only=True)
+    booked_to_datetime = serializers.DateTimeField(format='%Y-%m-%d %H:%M',
+                                                   read_only=True)
+
     class Meta:
         model = Booking
-        fields = ('booked_from_datetime', 'booked_to_datetime', 'user')
+        fields = ('booked_from_datetime', 'booked_to_datetime',)
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -61,3 +64,8 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ('name', 'description', 'booking')
+
+
+class DateSerialzier(serializers.Serializer):
+    datetime_from = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+    datetime_to = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
