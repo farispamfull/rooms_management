@@ -8,7 +8,7 @@ services:
     env_file:
       - ./.env
   web:
-    build: .
+    image: 58v13e60o004564/rooms_management:lates
     restart: always
     ports:
       - "8000:8000"
