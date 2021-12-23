@@ -26,10 +26,3 @@ class UserViewSet(ReadOnlyOrDestroyViewSet):
         if request.method == 'GET':
             serializer = UserSerializer(request.user)
             return Response(serializer.data)
-
-        # serializer = self.get_serializer(request.user, data=request.data,
-        #                                  partial=True)
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save(email=request.user.email,
-        #                 username=request.user.username)
-        # return Response(serializer.data)

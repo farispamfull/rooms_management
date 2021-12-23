@@ -1,3 +1,3 @@
-from django.db import models
+from api.serializers import BookingSerializer
 
-# Create your models here.
+

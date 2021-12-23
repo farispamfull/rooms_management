@@ -59,7 +59,12 @@ class BookingSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
-    booking = BookingSerializer(many=True)
+    booking = serializers.SerializerMethodField(
+        method_name='get_current_booking')
+
+    def get_current_booking(self, obj):
+        current_booking = obj.current_booking
+        return BookingSerializer(current_booking, many=True).data
 
     class Meta:
         model = Room

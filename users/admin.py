@@ -7,6 +7,7 @@ from .models import User
 
 class MyUserAdmin(UserAdmin):
     form = MyUserChangeForm
+    search_fields = ('email', 'username')
 
 
 admin.site.register(User, MyUserAdmin)

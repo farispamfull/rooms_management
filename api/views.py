@@ -4,7 +4,7 @@ from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.viewsets import ModelViewSet
-
+from datetime import datetime
 from .models import Booking, Room
 from .serializers import BookingPostSerializer, RoomSerializer, DateSerialzier
 
@@ -29,8 +29,6 @@ class RoomViewSet(ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     filter_backends = [DjangoFilterBackend]
-
-    # filterset_class = RoomFilter
 
     def get_queryset(self):
         query = self.request.query_params
