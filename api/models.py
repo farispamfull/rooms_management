@@ -5,8 +5,11 @@ User = get_user_model()
 
 
 class Room(models.Model):
-    name = models.CharField(max_length=50)
-    descriptions = text = models.TextField(blank=True)
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Booking(models.Model):
