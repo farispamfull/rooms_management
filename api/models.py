@@ -1,3 +1,18 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
-# Create your models here.
+User = get_user_model()
+
+
+class Room(models.Model):
+    name = models.CharField(max_length=50)
+    descriptions = text = models.TextField(blank=True)
+
+
+class Booking(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE,
+                             related_name='booking')
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='booking')
+    booked_from_datetime = models.DateTimeField()
+    booked_to_datetime = models.DateTimeField()
