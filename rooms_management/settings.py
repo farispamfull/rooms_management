@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from pathlib import Path
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -130,12 +131,15 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M"
 
-
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
+
+MAX_ROOM_TIME = datetime.timedelta(hours=5)
+
+MIN_ROOM_TIME = datetime.timedelta(hours=1)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/

@@ -1,7 +1,8 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from authentication.views import (UserRegistrationView, UserLoginView)
+from authentication.views import (UserRegistrationView, UserLoginView,
+                                  user_logout)
 from users.views import UserViewSet
 from .views import BookingViewSet, RoomViewSet
 
@@ -12,6 +13,7 @@ router_v1.register('rooms', RoomViewSet, basename='room')
 
 auth_patterns = [path('signup/', UserRegistrationView.as_view()),
                  path('token/login/', UserLoginView.as_view()),
+                 path('token/logout/', user_logout)
                  ]
 
 urlpatterns = [

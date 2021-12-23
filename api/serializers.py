@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from rest_framework import serializers
 
 from users.serializers import UserSerializer
@@ -19,14 +20,17 @@ class BookingPostSerializer(serializers.ModelSerializer):
                                                        datetime_validator])
 
     def validate(self, attrs):
-        one_hour = datetime.timedelta(hours=1)
         from_time = attrs.get('booked_from_datetime')
         to_time = attrs.get('booked_to_datetime')
         room = attrs.get('room')
+        current_time = to_time - from_time
 
-        if to_time - from_time < one_hour:
+        if current_time < settings.MIN_ROOM_TIME:
             raise serializers.ValidationError(
-                'бронировать нельзя меньше, чем на час')
+                'Слишком маленький промежуток времени')
+        if current_time > settings.MAX_ROOM_TIME:
+            raise serializers.ValidationError(
+                'Слишком большой промежуток времени')
 
         bookings = room.booking.exclude(
             booked_to_datetime__gt=to_time

@@ -1,11 +1,10 @@
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    RetrieveModelMixin)
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Booking, Room
-from .permissions import AuthenticatedOrStaffPermission
+from .permissions import (AuthenticatedOrStaffPermission, AuthenticatedOrOwner)
 from .serializers import (BookingPostSerializer, RoomSerializer,
                           DateSerialzier, BookingSerializer)
 
@@ -15,7 +14,7 @@ class BookingViewSet(GenericViewSet, CreateModelMixin, DestroyModelMixin,
     queryset = Booking.objects.all()
     serializer_class = BookingPostSerializer
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AuthenticatedOrOwner]
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
