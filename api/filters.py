@@ -1,13 +1,14 @@
 from django_filters import rest_framework as filters
 
-from .models import Room
+from users.models import User
 
 
-class RoomFilter(filters.FilterSet):
-    datetime_from = filters.IsoDateTimeFilter(method='filter_datetime_from')
-    datetime_to = filters.IsoDateTimeFilter(method='filter_datetime_to')
+class UsersFilter(filters.FilterSet):
+    booking = filters.NumberFilter(method='filter_booking')
 
+    def filter_booking(self, queryset, name, value):
+        return queryset.filter(booking__id=value)
 
     class Meta:
-        model = Room
-        fields = ['datetime_from', 'datetime_to']
+        model = User
+        fields = ['booking']

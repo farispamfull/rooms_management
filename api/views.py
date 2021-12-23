@@ -1,17 +1,13 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    RetrieveModelMixin)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.viewsets import ModelViewSet
-from datetime import datetime
+
 from .models import Booking, Room
-from .serializers import BookingPostSerializer, RoomSerializer, DateSerialzier
-
-
-#
-# class CreateDestroyAPIView(DestroyAPIView, CreateModelMixin):
-#     pass
+from .permissions import AuthenticatedOrStaffPermission
+from .serializers import (BookingPostSerializer, RoomSerializer,
+                          DateSerialzier, BookingSerializer)
 
 
 class BookingViewSet(GenericViewSet, CreateModelMixin, DestroyModelMixin,
@@ -21,6 +17,11 @@ class BookingViewSet(GenericViewSet, CreateModelMixin, DestroyModelMixin,
 
     permission_classes = [IsAuthenticated]
 
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return BookingSerializer
+        return BookingPostSerializer
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -28,7 +29,7 @@ class BookingViewSet(GenericViewSet, CreateModelMixin, DestroyModelMixin,
 class RoomViewSet(ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
-    filter_backends = [DjangoFilterBackend]
+    permission_classes = [AuthenticatedOrStaffPermission]
 
     def get_queryset(self):
         query = self.request.query_params
