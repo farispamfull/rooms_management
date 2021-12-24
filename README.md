@@ -39,7 +39,6 @@
 * Есть эндпоинт для users `api/v1/users/`. Доступен только для staff:
   - позволяет staff видеть брони каждого юзера
   - есть фильтр по конкретной брони, чтобы узнать юзера.
-  - есть фильтр по конкретной комнате. Фильтр по полю name комнаты.
   - свои данные и все бронирования можно посмотреть на `api/v1/users/me` (permissions: authentication)
 
  
@@ -65,7 +64,7 @@ Prefix /api/v1/
 
 users/
   - get (permissions: staff)
-  - filter: booking(id), room(name)
+  - filter: booking(id)
 
 users/:id/
   - get (permissions: staff)
