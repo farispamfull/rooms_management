@@ -10,7 +10,7 @@ class UsersFilter(filters.FilterSet):
     def filter_booking(self, queryset, name, value):
         return queryset.filter(booking__id=value)
 
-    def filter_booking(self, queryset, name, value):
+    def filter_room(self, queryset, name, value):
         return queryset.filter(booking__room__name=value)
 
     class Meta:

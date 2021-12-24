@@ -1,7 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
 
-from users.serializers import UserSerializer
 from .models import Booking, Room
 from .validators import datetime_validator
 
@@ -9,7 +8,8 @@ from .validators import datetime_validator
 class BookingPostSerializer(serializers.ModelSerializer):
     room = serializers.SlugRelatedField(queryset=Room.objects.all(),
                                         slug_field='name')
-    user = UserSerializer(read_only=True)
+    user = serializers.SlugRelatedField(
+        slug_field='email', read_only=True)
     booked_from_datetime = serializers.DateTimeField(format='%Y-%m-%d %H:%M',
                                                      validators=[
                                                          datetime_validator])
