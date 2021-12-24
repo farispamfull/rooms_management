@@ -30,13 +30,10 @@ class BookingPostSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Слишком большой промежуток времени')
 
-        bookings = room.booking.exclude(
-            booked_to_datetime__gte=to_time
-        ).exclude(
-            booked_from_datetime__lte=from_time,
-        )
-
-        if bookings.exists():
+        bookings = room.booking.bookings.exclude(
+            booked_from_datetime__lte=to_time,
+            booked_to_datetime__gte=from_time)
+        if room.booking.count() != bookings.count():
             raise serializers.ValidationError(
                 'Выбраное время уже занято'
             )
