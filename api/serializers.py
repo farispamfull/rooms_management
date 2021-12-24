@@ -30,7 +30,7 @@ class BookingPostSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Слишком большой промежуток времени')
 
-        bookings = room.booking.bookings.exclude(
+        bookings = room.booking.exclude(
             booked_from_datetime__lte=to_time,
             booked_to_datetime__gte=from_time)
         if room.booking.count() != bookings.count():
