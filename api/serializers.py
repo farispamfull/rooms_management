@@ -31,9 +31,9 @@ class BookingPostSerializer(serializers.ModelSerializer):
                 'Слишком большой промежуток времени')
 
         bookings = room.booking.exclude(
-            booked_to_datetime__gt=to_time
+            booked_to_datetime__gte=to_time
         ).exclude(
-            booked_from_datetime__lt=from_time,
+            booked_from_datetime__lte=from_time,
         )
 
         if bookings.exists():

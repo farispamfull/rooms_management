@@ -41,3 +41,32 @@ jobs:
         with:
           push: true
           tags: 58v13e60o004564/rooms_management:lates
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push_to_docker_hub
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "./.env, nginx/default.conf, ./docker-compose.yaml"
+          target: "/home/ubuntu/rooms_management"
+
+
+      - name: executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~
+            cd ./rooms_management
+            sudo docker-compose down
+            sudo docker pull 58v13e60o004564/rooms_management:latest
+            sudo docker-compose up -d
+            sudo docker-compose exec -T web python manage.py collectstatic --no-input
+            sudo docker image prune -f
