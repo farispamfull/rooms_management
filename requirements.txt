@@ -7,11 +7,14 @@ colorama==0.4.4
 Django==3.0
 django-filter==2.4.0
 djangorestframework==3.12.4
+gunicorn==20.0.4
 idna==3.2
 importlib-metadata==4.8.1
 iniconfig==1.1.1
 packaging==21.0
+phonenumbers==8.12.40
 pluggy==0.13.1
+psycopg2-binary==2.8.6
 py==1.10.0
 PyJWT==2.1.0
 pyparsing==2.4.7
@@ -25,5 +28,3 @@ toml==0.10.2
 typing-extensions==3.10.0.2
 urllib3==1.26.6
 zipp==3.5.0
-gunicorn==20.0.4
-psycopg2-binary>=2.8,<2.9
