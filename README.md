@@ -27,24 +27,29 @@
 ## Описание проекта <a name="description"></a>
 
 * В проекте есть два основых пути для взаимодействия: `api/v1/booking/` и `api/v1/rooms/`
-
+  - `api/v1/booking/` предоставляет фильтрацию для `staff` юзеров:
+     - user (id)
+     - room (name)
+     - date_gte (date: `2021-12-15 18:30`)
+     - date_lte (date: `2021-12-15 18:30`)
 * У комнат при запросе выводится только актуальное бронирование на текущий момент времени
  
 * Рассмотрены узкие моменты:
   - пользователь не может бронировать больше или меньше определенного времени
   - бронировать можно только на свободное время
-  - нет вывода старых бронирований
+  - нет вывода старых бронирований при обращение к ресурсу комнат 
   - бронировать можно только на будущие даты
 
 * Есть эндпоинт для users `api/v1/users/`. Доступен только для staff:
   - позволяет staff видеть брони каждого юзера
-  - есть фильтр по конкретной брони, чтобы узнать юзера.
+  - есть поиск по `username` и `email`
   - свои данные и все бронирования можно посмотреть на `api/v1/users/me` (permissions: authentication)
 
  
 
 * Ключевой момент тестового задания - фильтрация комнат по времени - написан с использованием свойств пересечений множеств
 
+* В проекте написано несколько важных тестов  
 
 
 ## Процесс регистрации <a name="registations"></a>
@@ -64,7 +69,7 @@ Prefix /api/v1/
 
 users/
   - get (permissions: staff)
-  - filter: booking(id)
+  - поля для поиска: username,email
 
 users/:id/
   - get (permissions: staff)
@@ -75,16 +80,26 @@ users/me/
 
 booking/
   - post 
-    - комната указывается по name
+     - комната указывается по name
+  - фильтрация :
+        - user (id)
+        - room (name)
+        - date_gte (date: `2021-12-15 18:30`)
+        - date_lte (date: `2021-12-15 18:30`)
+
+booking/:id/
+  - get (permissions: owner or staff)
   - delete (permissions: owner or staff)
-  - patch (permissions: owner or staff)
 
 rooms/
   - post (permissions: staff)
   - get (permissions: authentication)
+  - фильтрация: 
+        - datetime_from & datetime_to | Format: `2021-12-15 18:30`
+rooms/:id
   - delete (permissions: staff)
-
-  -  filter: datetime_from & datetime_to
+  - path (permissions: staff)
+  
 
 
 ```
@@ -133,3 +148,7 @@ docker-compose exec web python manage.py migrate
 Соберите статику:
 ```
 docker-compose exec web python manage.py collectstatic --no-input
+```
+Запустите тесты:
+```
+docker-compose exec web pytest

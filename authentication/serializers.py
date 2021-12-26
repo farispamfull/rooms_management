@@ -3,10 +3,14 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
+from api.validators import phone_validator
+
 User = get_user_model()
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
+    phone = serializers.CharField(validators=[phone_validator])
+
     class Meta:
         model = User
         fields = (

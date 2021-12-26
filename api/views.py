@@ -1,25 +1,27 @@
-from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
-                                   RetrieveModelMixin)
-from rest_framework.viewsets import GenericViewSet
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin)
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from .filters import BookingFilter
 from .models import Booking, Room
-from .permissions import (AuthenticatedOrStaffPermission, AuthenticatedOrOwner)
+from .permissions import (AuthenticatedOrStaffPermission, AuthenticatedOrOwner,
+                          AuthenticatedOrAdmin)
 from .serializers import (BookingPostSerializer, RoomSerializer,
-                          DateSerialzier, BookingSerializer)
+                          DateSerialzier)
 
 
-class BookingViewSet(GenericViewSet, CreateModelMixin, DestroyModelMixin,
-                     RetrieveModelMixin):
+class ReadOnlyNotUpdateViewSet(ReadOnlyModelViewSet, DestroyModelMixin,
+                               CreateModelMixin):
+    pass
+
+
+class BookingViewSet(ReadOnlyNotUpdateViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingPostSerializer
-
-    permission_classes = [AuthenticatedOrOwner]
-
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return BookingSerializer
-        return BookingPostSerializer
+    permission_classes = [AuthenticatedOrAdmin, AuthenticatedOrOwner]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = BookingFilter
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -37,8 +39,11 @@ class RoomViewSet(ModelViewSet):
             datetime_from = serializer.data['datetime_from']
             datetime_to = serializer.data['datetime_to']
 
-            return Room.objects.prefetch_related('booking').exclude(
-                booking__booked_from_datetime__lte=datetime_to,
-                booking__booked_to_datetime__gte=datetime_from)
+            filter_set = Booking.objects.filter(
+                booked_from_datetime__lt=datetime_to,
+                booked_to_datetime__gt=datetime_from)
 
-        return Room.objects.all()
+            return Room.objects.prefetch_related('booking').exclude(
+                booking__in=filter_set)
+
+        return Room.objects.prefetch_related('booking')

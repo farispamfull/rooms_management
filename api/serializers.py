@@ -30,12 +30,13 @@ class BookingPostSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Слишком большой промежуток времени')
 
-        bookings = room.booking.exclude(
-            booked_from_datetime__lte=to_time,
-            booked_to_datetime__gte=from_time)
-        if room.booking.count() != bookings.count():
+        bookings = room.booking.filter(
+            booked_from_datetime__lt=to_time,
+            booked_to_datetime__gt=from_time)
+
+        if bookings.exists():
             raise serializers.ValidationError(
-                'Выбраное время уже занято'
+                'выбранное  время уже занято'
             )
 
         return attrs
@@ -55,11 +56,12 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = ('id', 'booked_from_datetime', 'booked_to_datetime',)
+        read_only_fields = fields
 
 
 class RoomSerializer(serializers.ModelSerializer):
     booking = serializers.SerializerMethodField(
-        method_name='get_current_booking')
+        method_name='get_current_booking', read_only=True)
 
     def get_current_booking(self, obj):
         current_booking = obj.current_booking
@@ -67,7 +69,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ('name', 'description', 'booking')
+        fields = ('id', 'name', 'description', 'booking')
 
 
 class DateSerialzier(serializers.Serializer):

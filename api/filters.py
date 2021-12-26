@@ -1,18 +1,16 @@
 from django_filters import rest_framework as filters
 
-from users.models import User
+from .models import Booking
 
 
-class UsersFilter(filters.FilterSet):
-    booking = filters.NumberFilter(method='filter_booking')
-    # room = filters.CharFilter(method='filter_room')
-
-    def filter_booking(self, queryset, name, value):
-        return queryset.filter(booking__id=value)
-
-    # def filter_room(self, queryset, name, value):
-    #     return queryset.filter(booking__room__name=value)
+class BookingFilter(filters.FilterSet):
+    user = filters.NumberFilter(field_name='user__id')
+    room = filters.CharFilter(field_name='room__name', lookup_expr='iexact')
+    date_gte = filters.DateFilter(field_name='booked_from_datetime',
+                                  lookup_expr='gte')
+    date_lte = filters.DateFilter(field_name='booked_to_datetime',
+                                  lookup_expr='lte')
 
     class Meta:
-        model = User
-        fields = ['booking']
+        model = Booking
+        fields = ['user', 'room', 'date_gte', 'date_lte']
